@@ -83,26 +83,34 @@ public class AnimalAkinator implements Serializable {
             learnNewAnimal(current); //Llamamos al metodo para que aprenda un nuevo animal
         }
     }
-
+    
+    /**
+     * Metodo learnNewAnimal : el programa aprende un nuevo animal
+     * @param current : el nodo actual en donde nos quedamos del juego
+     */
     private void learnNewAnimal(Node current) {
-        System.out.println("Me rindo... En que animal pensabas?");
-        String newAnimal = scanner.nextLine();
-
+        System.out.println("Me rindo... En que animal pensabas?"); //Akinator se rinde
+        String newAnimal = scanner.nextLine(); //Escanemos al nuevo animal para tener en el arbol binario
+        
+        //Le solicitamos al usuario que nos indique alguna diferencia para ubicar al animal nuevo de otros animales
         System.out.println("¿Que pregunta diferencia a un " + newAnimal + " de un " + current.data + "?");
-        String newQuestion = scanner.nextLine();
-
+        String newQuestion = scanner.nextLine(); //Guardamos la pregunta basada en el animal
+        
+        //Preguntamos al usuario si la pregunta que envio se contesta con un si o no
         System.out.println("Para un " + newAnimal + ", ¿cual es la respuesta a esa pregunta? (si/no)");
-        boolean answerForNewAnimal = getYesOrNoAnswer();
-
-        // Create new nodes and reassign current node's data
-        Node oldAnimalNode = new Node(current.data);
-        current.data = newQuestion;
+        boolean answerForNewAnimal = getYesOrNoAnswer(); //Por medio de este metodo es que guardamos el valor de la pregunta, osea si es un si o un no
+  
+        Node oldAnimalNode = new Node(current.data); //Apartir de la informacion del nodo que tenemos, lo guardamos en otro nodo
+        
+        current.data = newQuestion; //El nodo actual su informacion se vuelve en la nueva pregunta
+        
+        //Si devolvio true la respuesta, osea que es un si entonces...
         if (answerForNewAnimal) {
-            current.yesBranch = new Node(newAnimal);
-            current.noBranch = oldAnimalNode;
-        } else {
-            current.noBranch = new Node(newAnimal);
-            current.yesBranch = oldAnimalNode;
+            current.yesBranch = new Node(newAnimal); //El nuevo animal se vuelve parte de la hoja/hijo si
+            current.noBranch = oldAnimalNode; //El viejo animal se vuelve parte de la hoja/hijo no
+        } else { //De lo contrario si es un no entonces...
+            current.noBranch = new Node(newAnimal); //El nuevo animal se vuelve parte de la hoja/hijo no
+            current.yesBranch = oldAnimalNode; //EL viejo animal se vuelve parte de la hoja/hijo si
         }
     }
     
@@ -129,14 +137,18 @@ public class AnimalAkinator implements Serializable {
     }
 
     /**
-     * Metodo saveTree : salvar el arbol binario de manera serializada e
+     * Metodo saveTree : salvar el arbol binario de manera serializada 
      */
     private void saveTree() {
+        //Intentamos crear un flujo de salida hacia el archivo donde contiene el arbol binario
+        //El ObjectOutputStream es la que escribe los objetos en formato binario
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            oos.writeObject(root);
-            System.out.println("Datos de juego guardados");
-        } catch (IOException e) {
-            System.out.println("Error salvando los datos del juego: " + e.getMessage());
+            oos.writeObject(root); //Serializamos el objeto root (raiz del arbol)
+            //Esto causa que cualquier objeto que tenga o referenciado los convierta en una secuencia de bytes
+            //Y los guarde en el archivo especificado
+            System.out.println("Datos de juego guardados"); //Mostramos que los datos se guardaron de manera correcta
+        } catch (IOException e) { //En caso de que exista un error a la hora de guardar el juego
+            System.out.println("Error salvando los datos del juego: " + e.getMessage()); //Mostramos el error en la consola
         }
     }
 
@@ -144,13 +156,16 @@ public class AnimalAkinator implements Serializable {
      * Metodo loadTree : cargar el arbol binario del juego a la memoria del programa
      */
     private void loadTree() {
+        //Intentamos crear un flujo de entrada desde el nombre del archivo
+        //Lo que hacemos es preparar la lectura del arbol binario
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
-            root = (Node) ois.readObject();
-            System.out.println("Cargando datos del juego.");
-        } catch (FileNotFoundException e) {
-            System.out.println("No existen datos del juego, cargando un nuevo arbol");
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error cargando los datos del juego: " + e.getMessage());
+            root = (Node) ois.readObject(); //Hacamos un casting de Node para que el metodo pueda leer el objeto que se encuentre en el archivo
+            //Cuando se termina de cargar el objeto deserializado se lo asignamos a la raiz del arbol
+            System.out.println("Cargando datos del juego."); //Mostramos que se cargaron de manera exitosa los datos del juego
+        } catch (FileNotFoundException e) { //Excepcion en caso de que no exista el archivo que le pasamos
+            System.out.println("No existen datos del juego, cargando un nuevo arbol"); //Mensaje de error en consola
+        } catch (IOException | ClassNotFoundException e) { //Error durante la lectura o deserailizacion del archivo
+            System.out.println("Error cargando los datos del juego: " + e.getMessage()); //Mensaje de error en consola
         }
     }
  

@@ -34,7 +34,7 @@ public class Node implements Serializable {
     /**
      * Metodo isLeaf : Determinar si es una rama o hoja
      * La hoja seria el nombre del animal y la rema la pregunta
-     * @return : Si es hoja o no
+     * @return : Si es hoja/hijo o no
      */
     public boolean isLeaf() {
         //Retornamos la expresion si la respuestas de si y no, no llevan a otra pregunta
